@@ -15,8 +15,6 @@ from pydoc     import locate
 from model     import ResNet18, normalize
 from methods   import *
 
-torch.set_num_threads(4)
-
 # Arguments
 # -----------------------------------------------------------------------------------------
 
@@ -31,7 +29,7 @@ parser.add_argument('-m','--method', type=str, default='er', choices=METHODS.key
 
 """ data """
 parser.add_argument('--download', type=int, default=0)
-parser.add_argument('--data_root', type=str, default='../cl-pytorch/data')
+parser.add_argument('--data_root', type=str, default='./data_folder')
 parser.add_argument('--dataset', type=str, default='cifar10', choices=DATASETS)
 parser.add_argument('--smooth', type=int, default=0)
 
@@ -48,6 +46,7 @@ parser.add_argument('--eval_every', type=int, default=1e9)
 parser.add_argument('--run', type=int, default=0)
 parser.add_argument('--validation', type=int, default=1)
 parser.add_argument('--load_best_args', type=int, default=0)
+parser.add_argument('--gpu_id', type=int, default=0)
 
 """ logging """
 parser.add_argument('--exp_name', type=str, default='tmp')
@@ -92,7 +91,8 @@ if args.method in ['iid', 'iid++']:
 
 # Obligatory overhead
 # -----------------------------------------------------------------------------------------
-
+torch.cuda.set_device(args.gpu_id)
+torch.set_num_threads(4)
 if torch.cuda.is_available():
     device = 'cuda'
 else:
